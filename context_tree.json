@@ -1,0 +1,1565 @@
+{
+  "project_name": "EazeAccounts",
+  "tech_stack": {
+    "frontend": "React 18, Vite, Redux Toolkit, RTK Query, MUI 6, Tailwind CSS 4, Formik, Yup, React Router v6, Socket.io-client, Sentry",
+    "backend": "Node.js, Express.js, Sequelize ORM, mysql2, JWT, Joi, Socket.io, Winston, Swagger, Puppeteer, node-cron",
+    "admin": "React 18, Vite, MUI 6, Redux Toolkit, RTK Query, Formik, React Router v6, ApexCharts, Sentry",
+    "database": "MySQL (Sequelize models + stored procedures)",
+    "cache": "node-cache, LRU cache",
+    "queue": "AWS SQS (Plaid sync, notifications)",
+    "storage": "AWS S3, AWS Secrets Manager",
+    "integrations": "Plaid (banking + transfer), Stripe (billing + Connect), Firebase (push), AWS SNS, Tesseract OCR, Ollama/OpenRouter (EazeAI), Nodemailer/MJML (email)"
+  },
+  "team": [
+    { "name": "Anand Pandey", "email": "anand.pandey@eazeaccounts.com" },
+    { "name": "Abhishek Patel", "email": "abhishek.patel@eazeaccounts.com" },
+    { "name": "Saswat Singh", "email": "saswat.singh@eazeaccounts.com" },
+    {
+      "name": "Maheshwar Muthukumar",
+      "email": "maheshwar.muthukumar@eazeaccounts.com"
+    },
+    { "name": "Harsh Garg", "email": "harsh.garg@eazeaccounts.com" },
+    { "name": "Adarsh Patel", "email": "adarsh.patel@eazeaccounts.com" },
+    { "name": "Adarsh Patel", "email": "adarsh.patel@eazeaccounts.com" }
+  ],
+  "modules": [
+    {
+      "module_name": "auth",
+      "description": "User login, registration, JWT/HttpOnly cookie sessions, refresh tokens, 2FA/MFA, CSRF protection, password health, and session management across frontend and backend.",
+      "files": [
+        {
+          "file": "ea-frontend/src/pages/auth/Login2.jsx",
+          "description": "Primary login page for users and partner variants."
+        },
+        {
+          "file": "ea-frontend/src/pages/auth/Signup.jsx",
+          "description": "User registration flow with email verification."
+        },
+        {
+          "file": "ea-frontend/src/pages/auth/MfaVerification.jsx",
+          "description": "MFA/2FA OTP verification step after login."
+        },
+        {
+          "file": "ea-frontend/src/pages/auth/ForgotPassword.jsx",
+          "description": "Password reset request form."
+        },
+        {
+          "file": "ea-frontend/src/pages/auth/ResetPassword.jsx",
+          "description": "Password reset completion form."
+        },
+        {
+          "file": "ea-frontend/src/components/AuthChecker.jsx",
+          "description": "Route guards: Public, RequireAuth, RequireOrganization, RequirePermission."
+        },
+        {
+          "file": "ea-frontend/src/components/AuthInitializer.jsx",
+          "description": "Restores authenticated session on app load."
+        },
+        {
+          "file": "ea-frontend/src/features/auth/authSlice.jsx",
+          "description": "Redux auth state: user, org, subscription, permissions, CSRF."
+        },
+        {
+          "file": "ea-frontend/src/services/authApi.js",
+          "description": "RTK Query endpoints for login, register, logout, session."
+        },
+        {
+          "file": "ea-frontend/src/services/twoFactorApi.js",
+          "description": "2FA setup and verification API calls."
+        },
+        {
+          "file": "ea-frontend/src/services/baseQuery.js",
+          "description": "RTK Query base with credentials, CSRF headers, token refresh."
+        },
+        {
+          "file": "ea-backend/controller/authController.js",
+          "description": "User registration, OTP verification, and login HTTP handlers."
+        },
+        {
+          "file": "ea-backend/controller/tokenController.js",
+          "description": "Refresh token rotation, logout, and token validation."
+        },
+        {
+          "file": "ea-backend/controller/twoFactorController.js",
+          "description": "2FA setup, verify, and disable endpoints."
+        },
+        {
+          "file": "ea-backend/services/AuthService.js",
+          "description": "Core auth logic: JWT v5 claims, RBAC integration, navigation decisions."
+        },
+        {
+          "file": "ea-backend/services/RefreshTokenService.js",
+          "description": "Refresh token lifecycle and revocation."
+        },
+        {
+          "file": "ea-backend/services/TwoFactorService.js",
+          "description": "TOTP generation and validation via otplib."
+        },
+        {
+          "file": "ea-backend/services/CookieService.js",
+          "description": "HttpOnly cookie configuration for secure sessions."
+        },
+        {
+          "file": "ea-backend/middleware/authorization.js",
+          "description": "JWT verification plus sidebar permission checks per route."
+        },
+        {
+          "file": "ea-backend/middleware/csrfProtection.js",
+          "description": "Double-submit CSRF cookie validation."
+        },
+        {
+          "file": "ea-backend/middleware/browserValidation.js",
+          "description": "Blocks cURL/Postman replay attacks on sensitive routes."
+        },
+        {
+          "file": "ea-backend/Routes/authRoutes.js",
+          "description": "Auth route definitions for registration and login."
+        },
+        {
+          "file": "ea-backend/Routes/tokenRoutes.js",
+          "description": "Token refresh and logout routes."
+        },
+        {
+          "file": "ea-backend/Routes/twoFactorRoutes.js",
+          "description": "2FA API routes."
+        },
+        {
+          "file": "ea-backend/sequelize/UsersSchema.js",
+          "description": "Sequelize user model with password and profile fields."
+        },
+        {
+          "file": "ea-backend/sequelize/RefreshTokenSchema.js",
+          "description": "Refresh token storage model."
+        },
+        {
+          "file": "ea-admin/src/pages/auth/Login.jsx",
+          "description": "Super admin email/password login page."
+        },
+        {
+          "file": "ea-admin/src/components/AuthInitializer.jsx",
+          "description": "Restores super admin session via validate/refresh token."
+        },
+        {
+          "file": "ea-admin/src/services/authApi.js",
+          "description": "Super admin login, profile, change-password, logout API."
+        }
+      ]
+    },
+    {
+      "module_name": "organization_onboarding",
+      "description": "Multi-organization management, post-signup onboarding wizard, subscription gating, and organization access validation.",
+      "files": [
+        {
+          "file": "ea-frontend/src/pages/auth/OrganizationCreationForm.jsx",
+          "description": "Create new organization after signup."
+        },
+        {
+          "file": "ea-frontend/src/pages/auth/PlanSelection.jsx",
+          "description": "Subscription plan picker during signup."
+        },
+        {
+          "file": "ea-frontend/src/pages/auth/SubscriptionSetup.jsx",
+          "description": "Stripe payment setup for new subscription."
+        },
+        {
+          "file": "ea-frontend/src/pages/onboarding/OnboardingLayout.jsx",
+          "description": "Post-signup wizard shell with step routing."
+        },
+        {
+          "file": "ea-frontend/src/pages/onboarding/BusinessProfileStep.jsx",
+          "description": "Business profile setup step."
+        },
+        {
+          "file": "ea-frontend/src/pages/onboarding/ConnectBankStep.jsx",
+          "description": "Plaid bank connection during onboarding."
+        },
+        {
+          "file": "ea-frontend/src/pages/onboarding/PaymentSetupStep.jsx",
+          "description": "Payment method setup step."
+        },
+        {
+          "file": "ea-frontend/src/pages/onboarding/TeamSetupStep.jsx",
+          "description": "Invite team members during onboarding."
+        },
+        {
+          "file": "ea-frontend/src/services/onboardingApi.js",
+          "description": "Onboarding progress persistence API."
+        },
+        {
+          "file": "ea-frontend/src/services/companyApi.js",
+          "description": "Organization CRUD and employee management API."
+        },
+        {
+          "file": "ea-backend/controller/organizationController.js",
+          "description": "Organization CRUD, settings, and multi-org access."
+        },
+        {
+          "file": "ea-backend/controller/onboardingController.js",
+          "description": "Setup wizard progress and task completion."
+        },
+        {
+          "file": "ea-backend/services/OrganizationAccessService.js",
+          "description": "Validates Organization header against user access with cache."
+        },
+        {
+          "file": "ea-backend/middleware/validateOrganizationAccess.js",
+          "description": "Middleware enforcing org header security."
+        },
+        {
+          "file": "ea-backend/middleware/optimizedSubscriptionGuard.js",
+          "description": "JWT-claim-based subscription enforcement."
+        },
+        {
+          "file": "ea-backend/sequelize/OrganizationSchema.js",
+          "description": "Organization model."
+        },
+        {
+          "file": "ea-backend/sequelize/OnboardingProgressSchema.js",
+          "description": "Onboarding wizard state model."
+        }
+      ]
+    },
+    {
+      "module_name": "rbac",
+      "description": "Role-based access control with modules, submodules, actions, custom roles, sidebar permissions, and permission-gated UI.",
+      "files": [
+        {
+          "file": "ea-frontend/src/pages/Roles/index.jsx",
+          "description": "Roles list management page."
+        },
+        {
+          "file": "ea-frontend/src/pages/Roles/RolesForm.jsx",
+          "description": "Create/edit role with permission tree."
+        },
+        {
+          "file": "ea-frontend/src/components/PermissionGate.jsx",
+          "description": "Conditional render based on RBAC permission."
+        },
+        {
+          "file": "ea-frontend/src/components/Layout/Sidebar.jsx",
+          "description": "Dynamic sidebar from RBAC menu API."
+        },
+        {
+          "file": "ea-frontend/src/services/rbacApi.js",
+          "description": "Permission tree and access API."
+        },
+        {
+          "file": "ea-frontend/src/services/rolesApi.js",
+          "description": "Roles CRUD API."
+        },
+        {
+          "file": "ea-frontend/src/services/menuApi.js",
+          "description": "Dynamic sidebar menu configuration API."
+        },
+        {
+          "file": "ea-backend/controller/rbacController.js",
+          "description": "RBAC admin: roles, permissions, user access."
+        },
+        {
+          "file": "ea-backend/controller/roleController.js",
+          "description": "Role CRUD endpoints."
+        },
+        {
+          "file": "ea-backend/services/RBACService.js",
+          "description": "RBAC business logic and permission resolution."
+        },
+        {
+          "file": "ea-backend/middleware/rbacMiddleware.js",
+          "description": "Permission enforcement middleware."
+        },
+        {
+          "file": "ea-backend/defaults.js",
+          "description": "Route-to-sidebar permission ID mapping for authorization."
+        },
+        {
+          "file": "ea-backend/sequelize/rbac/index.js",
+          "description": "RBAC model associations bootstrap."
+        },
+        {
+          "file": "ea-admin/src/pages/Modules/index.jsx",
+          "description": "CRUD for modules/submodules with drag-and-drop reorder."
+        },
+        {
+          "file": "ea-admin/src/pages/Actions/index.jsx",
+          "description": "CRUD for system permission actions."
+        },
+        {
+          "file": "ea-admin/src/services/modulesApi.js",
+          "description": "Modules, submodules, actions, sidebar preview API."
+        }
+      ]
+    },
+    {
+      "module_name": "accounting_coa",
+      "description": "Chart of accounts hierarchy, account types, categories, COA import/export, and account register views.",
+      "files": [
+        {
+          "file": "ea-frontend/src/pages/Accounting/index.jsx",
+          "description": "Accounting tab shell for COA and account types."
+        },
+        {
+          "file": "ea-frontend/src/pages/Accounting/ChartsOfAccounts/index.jsx",
+          "description": "Chart of accounts tree and list view."
+        },
+        {
+          "file": "ea-frontend/src/pages/Accounting/ChartsOfAccounts/COADetail.jsx",
+          "description": "Account detail page with register and transactions."
+        },
+        {
+          "file": "ea-frontend/src/pages/Accounting/ChartsOfAccounts/AccountForm.jsx",
+          "description": "Add/edit GL account form."
+        },
+        {
+          "file": "ea-frontend/src/pages/Accounting/ChartsOfAccounts/AccountTypeList.jsx",
+          "description": "Account type management."
+        },
+        {
+          "file": "ea-frontend/src/components/AccountSearchInput.jsx",
+          "description": "Reusable COA account picker autocomplete."
+        },
+        {
+          "file": "ea-frontend/src/services/accountApi.js",
+          "description": "Chart of accounts and journal entry API."
+        },
+        {
+          "file": "ea-backend/controller/chartOfAccountsController.js",
+          "description": "COA CRUD, import/export, hierarchy management."
+        },
+        {
+          "file": "ea-backend/controller/accountTypeController.js",
+          "description": "Account type management endpoints."
+        },
+        {
+          "file": "ea-backend/controller/categoriesController.js",
+          "description": "Transaction category management."
+        },
+        {
+          "file": "ea-backend/services/coaExcelService.js",
+          "description": "COA Excel import and export logic."
+        },
+        {
+          "file": "ea-backend/repositories/chartOfAccountsRepository.js",
+          "description": "COA database access layer."
+        },
+        {
+          "file": "ea-backend/sequelize/ChartOfAccountsSchema.js",
+          "description": "Chart of accounts Sequelize model."
+        },
+        {
+          "file": "ea-admin/src/pages/COAIssues/index.jsx",
+          "description": "Orgs with journal entry/COA discrepancies list."
+        },
+        {
+          "file": "ea-admin/src/pages/COAIssues/COAIssueDetail.jsx",
+          "description": "Fix orphaned COA rows and imbalanced journal entries."
+        },
+        {
+          "file": "ea-admin/src/services/coaDiscrepancyApi.js",
+          "description": "JE monitor stats, fix orphaned/imbalanced entries API."
+        }
+      ]
+    },
+    {
+      "module_name": "journal_entries",
+      "description": "Manual journal entries, general ledger posting via stored procedures, JE import, and integrity monitoring.",
+      "files": [
+        {
+          "file": "ea-frontend/src/pages/Accounting/GeneralEntries/index.jsx",
+          "description": "Journal entries list page."
+        },
+        {
+          "file": "ea-frontend/src/pages/Accounting/GeneralEntries/EntriesForm.jsx",
+          "description": "Create/edit journal entry form."
+        },
+        {
+          "file": "ea-frontend/src/pages/Accounting/GeneralEntries/JournalEntriesImport.jsx",
+          "description": "Bulk journal entry import."
+        },
+        {
+          "file": "ea-frontend/src/components/JournalEntryDetailDrawer/index.jsx",
+          "description": "Side drawer for journal entry detail view."
+        },
+        {
+          "file": "ea-backend/controller/generalEntriesController.js",
+          "description": "Manual journal entry CRUD HTTP handlers."
+        },
+        {
+          "file": "ea-backend/controller/journalEntryMonitorController.js",
+          "description": "JE integrity monitoring for super admin."
+        },
+        {
+          "file": "ea-backend/services/journalEntry/JournalEntryService.js",
+          "description": "Core JE create/update/delete via stored procedures."
+        },
+        {
+          "file": "ea-backend/services/journalEntry/JournalEntryValidationService.js",
+          "description": "JE balance and validation rules."
+        },
+        {
+          "file": "ea-backend/repositories/journalEntry/journalEntrySPRepository.js",
+          "description": "Journal entry stored procedure calls."
+        },
+        {
+          "file": "ea-backend/sequelize/GeneralEntriesSchema.js",
+          "description": "Journal entry lines model."
+        }
+      ]
+    },
+    {
+      "module_name": "reports",
+      "description": "Financial and operational reports: P&L, balance sheet, trial balance, cash flow, aging, 1099, audit log, and PDF export.",
+      "files": [
+        {
+          "file": "ea-frontend/src/pages/Reports/index.jsx",
+          "description": "Reports hub with category cards and lazy report loader."
+        },
+        {
+          "file": "ea-frontend/src/pages/Reports/ProfitAndLoss.jsx",
+          "description": "Profit and loss report."
+        },
+        {
+          "file": "ea-frontend/src/pages/Reports/BalanceSheetV2.jsx",
+          "description": "Balance sheet report."
+        },
+        {
+          "file": "ea-frontend/src/pages/Reports/TrialBalance.jsx",
+          "description": "Trial balance report."
+        },
+        {
+          "file": "ea-frontend/src/pages/Reports/CashFlowReport.jsx",
+          "description": "Cash flow statement report."
+        },
+        {
+          "file": "ea-frontend/src/pages/Reports/SalesAndCustomers/ARAgingReport.jsx",
+          "description": "Accounts receivable aging report."
+        },
+        {
+          "file": "ea-frontend/src/pages/Reports/ExpensesAndVendors/APAgingReport.jsx",
+          "description": "Accounts payable aging report."
+        },
+        {
+          "file": "ea-frontend/src/pages/Reports/ExpensesAndVendors/Report1099.jsx",
+          "description": "1099 vendor payment report."
+        },
+        {
+          "file": "ea-frontend/src/components/HierarchicalReport.jsx",
+          "description": "Hierarchical report renderer component."
+        },
+        {
+          "file": "ea-frontend/src/components/Reports/pdf/exportReportPdf.js",
+          "description": "Shared PDF export engine for reports."
+        },
+        {
+          "file": "ea-frontend/src/services/reportsApi.js",
+          "description": "Report data RTK Query endpoints."
+        },
+        {
+          "file": "ea-backend/controller/reportsController.js",
+          "description": "Report aggregation endpoints."
+        },
+        {
+          "file": "ea-backend/controller/balanceSheetController.js",
+          "description": "Balance sheet report generation."
+        },
+        {
+          "file": "ea-backend/controller/profitAndLossController.js",
+          "description": "Profit and loss report generation."
+        },
+        {
+          "file": "ea-backend/controller/trialBalanceController.js",
+          "description": "Trial balance report generation."
+        },
+        {
+          "file": "ea-backend/services/CashProfitAndLossService.js",
+          "description": "Cash-basis P&L calculation logic."
+        },
+        {
+          "file": "ea-backend/services/StatementService.js",
+          "description": "Financial statement building logic."
+        }
+      ]
+    },
+    {
+      "module_name": "sales_ar",
+      "description": "Accounts receivable: customers, invoices, recurring invoices, payment receipts, credit notes, products, and public invoice pay.",
+      "files": [
+        {
+          "file": "ea-frontend/src/pages/Sales/index.jsx",
+          "description": "Sales module tab shell."
+        },
+        {
+          "file": "ea-frontend/src/pages/Sales/Invoice.jsx",
+          "description": "Invoice list page."
+        },
+        {
+          "file": "ea-frontend/src/pages/Sales/InvoiceForm.jsx",
+          "description": "Create/edit invoice form."
+        },
+        {
+          "file": "ea-frontend/src/pages/Sales/RecurringInvoices.jsx",
+          "description": "Recurring invoice schedules."
+        },
+        {
+          "file": "ea-frontend/src/pages/Sales/PaymentReceivedForm.jsx",
+          "description": "Record customer payment form."
+        },
+        {
+          "file": "ea-frontend/src/pages/Sales/Customers.jsx",
+          "description": "Customer/vendor/contractor list (shared component)."
+        },
+        {
+          "file": "ea-frontend/src/pages/InvoicePay/index.jsx",
+          "description": "Public pay-by-link landing page."
+        },
+        {
+          "file": "ea-frontend/src/services/salesApi.js",
+          "description": "Invoices, customers, payments RTK Query API."
+        },
+        {
+          "file": "ea-backend/controller/salesController.js",
+          "description": "Invoice/sales CRUD and email send."
+        },
+        {
+          "file": "ea-backend/controller/paymentReceiveController.js",
+          "description": "Customer payment receipt processing."
+        },
+        {
+          "file": "ea-backend/controller/invoicePayController.js",
+          "description": "Public invoice payment page (token-based)."
+        },
+        {
+          "file": "ea-backend/controller/recurringInvoiceController.js",
+          "description": "Recurring invoice series management."
+        },
+        {
+          "file": "ea-backend/services/SalesService.js",
+          "description": "Sales business logic and journal entry posting."
+        },
+        {
+          "file": "ea-backend/services/paymentReceiveService.js",
+          "description": "Payment receipt processing and GL posting."
+        },
+        {
+          "file": "ea-backend/sequelize/SalesSchema.js",
+          "description": "Sales/invoice Sequelize model."
+        }
+      ]
+    },
+    {
+      "module_name": "expense_ap",
+      "description": "Accounts payable: vendor bills, expenses, recurring bills, bill OCR, debit notes, and vendor bank change approvals.",
+      "files": [
+        {
+          "file": "ea-frontend/src/pages/Expense/index.jsx",
+          "description": "Expense module tab shell."
+        },
+        {
+          "file": "ea-frontend/src/pages/Expense/Bills/index.jsx",
+          "description": "Vendor bills list."
+        },
+        {
+          "file": "ea-frontend/src/pages/Expense/Bills/BillForm.jsx",
+          "description": "Create/edit vendor bill form."
+        },
+        {
+          "file": "ea-frontend/src/pages/Expense/Bills/BillOcrPanel.jsx",
+          "description": "OCR bill upload and parsing panel."
+        },
+        {
+          "file": "ea-frontend/src/pages/Expense/RecurringBills.jsx",
+          "description": "Recurring bill schedules."
+        },
+        {
+          "file": "ea-frontend/src/pages/Expense/VendorBankChanges/index.jsx",
+          "description": "Approve vendor bank detail changes."
+        },
+        {
+          "file": "ea-frontend/src/services/expenseApi.js",
+          "description": "Bills, vendors, expenses RTK Query API."
+        },
+        {
+          "file": "ea-backend/controller/expenseController.js",
+          "description": "Expense/bill CRUD with line items and attachments."
+        },
+        {
+          "file": "ea-backend/controller/billsController.js",
+          "description": "Vendor bills management endpoints."
+        },
+        {
+          "file": "ea-backend/controller/billOcrController.js",
+          "description": "Bill OCR upload and parse endpoints."
+        },
+        {
+          "file": "ea-backend/services/BillsService.js",
+          "description": "Bills business logic and GL posting."
+        },
+        {
+          "file": "ea-backend/services/billOcr/BillOcrService.js",
+          "description": "OCR pipeline using Tesseract/Textract."
+        },
+        {
+          "file": "ea-backend/sequelize/BillsSchema.js",
+          "description": "Vendor bills Sequelize model."
+        },
+        {
+          "file": "ea-backend/sequelize/ExpenseSchema.js",
+          "description": "Expense Sequelize model."
+        }
+      ]
+    },
+    {
+      "module_name": "bill_payment",
+      "description": "Vendor bill payments via Plaid Transfer: verification, sanctions screening, dual-control approval, settlement, and payouts.",
+      "files": [
+        {
+          "file": "ea-frontend/src/pages/Expense/BillPayment/index.jsx",
+          "description": "Bill payments list page."
+        },
+        {
+          "file": "ea-frontend/src/pages/Expense/BillPayment/BillPaymentForm.jsx",
+          "description": "Pay vendor bills form with approval workflow."
+        },
+        {
+          "file": "ea-frontend/src/pages/Expense/BillPaymentApprovals/index.jsx",
+          "description": "Bill payment approval queue."
+        },
+        {
+          "file": "ea-frontend/src/pages/Settings/BillPaymentConfig/index.jsx",
+          "description": "Org-level bill payment configuration."
+        },
+        {
+          "file": "ea-frontend/src/pages/Banking/PlaidTransferFundingSource/index.jsx",
+          "description": "Plaid transfer funding source setup."
+        },
+        {
+          "file": "ea-frontend/src/pages/Vendor/VendorVerification/index.jsx",
+          "description": "Vendor identity and bank verification flow."
+        },
+        {
+          "file": "ea-backend/controller/billPaymentController.js",
+          "description": "Vendor bill payment CRUD, settlement, refunds."
+        },
+        {
+          "file": "ea-backend/controller/billPayment/transferController.js",
+          "description": "Plaid Transfer rail HTTP handlers."
+        },
+        {
+          "file": "ea-backend/controller/vendorVerificationController.js",
+          "description": "Vendor KYB and bank verification."
+        },
+        {
+          "file": "ea-backend/services/billPayment/index.js",
+          "description": "Bill payment provider factory (Plaid Transfer)."
+        },
+        {
+          "file": "ea-backend/services/billPayment/verification/SanctionsScreeningService.js",
+          "description": "OFAC sanctions screening for payees."
+        },
+        {
+          "file": "ea-backend/services/billPayment/velocity/VelocityService.js",
+          "description": "Payment velocity limits and fraud checks."
+        },
+        {
+          "file": "ea-backend/services/InternalApprovalService.js",
+          "description": "Dual-control approval workflow for payments."
+        },
+        {
+          "file": "ea-backend/middleware/requireBillPaymentFeature.js",
+          "description": "Feature flag gate for bill payment module."
+        },
+        {
+          "file": "ea-backend/middleware/requireStepUp.js",
+          "description": "Step-up auth for sensitive payment operations."
+        },
+        {
+          "file": "ea-admin/src/pages/BillPaymentSettings/index.jsx",
+          "description": "Global platform bill payment config page."
+        },
+        {
+          "file": "ea-admin/src/pages/BillPaymentSettings/BillPaymentSettingsForm.jsx",
+          "description": "Global fees, limits, Plaid Transfer settings form."
+        },
+        {
+          "file": "ea-admin/src/services/billPaymentSettingsApi.js",
+          "description": "Global and per-org bill payment config API."
+        }
+      ]
+    },
+    {
+      "module_name": "banking_plaid",
+      "description": "Bank account management, Plaid Link integration, transaction sync, categorization rules, reconciliation, and SQS-backed workers.",
+      "files": [
+        {
+          "file": "ea-frontend/src/pages/Banking/index.jsx",
+          "description": "Banking module tab shell."
+        },
+        {
+          "file": "ea-frontend/src/pages/Banking/BankAccountManagement/index.jsx",
+          "description": "Bank account list and balances."
+        },
+        {
+          "file": "ea-frontend/src/pages/Banking/BankAccountSetup/PlaidConnect.jsx",
+          "description": "Plaid Link bank connection integration."
+        },
+        {
+          "file": "ea-frontend/src/pages/Banking/Transactions/index.jsx",
+          "description": "Bank transactions for review and categorization."
+        },
+        {
+          "file": "ea-frontend/src/pages/Banking/BankReconciliation/BankReconciliationWizard.jsx",
+          "description": "Multi-step bank reconciliation wizard."
+        },
+        {
+          "file": "ea-frontend/src/pages/Banking/Rules/RuleForm.jsx",
+          "description": "Create/edit auto-categorization bank rules."
+        },
+        {
+          "file": "ea-frontend/src/pages/Banking/OAuthCallback.jsx",
+          "description": "Plaid OAuth redirect handler."
+        },
+        {
+          "file": "ea-frontend/src/services/bankingApi.js",
+          "description": "Banks, transactions, reconciliation RTK Query API."
+        },
+        {
+          "file": "ea-backend/controller/plaidController.js",
+          "description": "Plaid link, sync, and webhook HTTP layer."
+        },
+        {
+          "file": "ea-backend/controller/bankReconsilationController.js",
+          "description": "Bank reconciliation UI/API endpoints."
+        },
+        {
+          "file": "ea-backend/controller/bankRulesController.js",
+          "description": "Auto-categorization rules management."
+        },
+        {
+          "file": "ea-backend/controller/transactionController.js",
+          "description": "Bank transaction CRUD and ledger matching."
+        },
+        {
+          "file": "ea-backend/services/plaid/plaidSyncService.js",
+          "description": "Plaid transaction sync pipeline."
+        },
+        {
+          "file": "ea-backend/services/BankReconciliationService.js",
+          "description": "Reconciliation matching logic."
+        },
+        {
+          "file": "ea-backend/workers/plaidSyncWorker.js",
+          "description": "SQS-backed async Plaid sync worker."
+        },
+        {
+          "file": "ea-backend/sequelize/BankAccountSchema.js",
+          "description": "Bank account Sequelize model."
+        },
+        {
+          "file": "ea-admin/src/pages/PlaidMonitor/index.jsx",
+          "description": "Live Plaid queue observability dashboard."
+        },
+        {
+          "file": "ea-admin/src/pages/PlaidTokens/index.jsx",
+          "description": "Review and deactivate stale Plaid access tokens."
+        },
+        {
+          "file": "ea-admin/src/services/plaidMonitorApi.js",
+          "description": "Plaid monitor stats, SQS jobs, replay controls API."
+        },
+        {
+          "file": "ea-admin/src/services/plaidTokenApi.js",
+          "description": "Plaid token management API."
+        }
+      ]
+    },
+    {
+      "module_name": "fixed_assets",
+      "description": "Fixed asset register, depreciation schedules, automated depreciation runs, and asset disposal accounting.",
+      "files": [
+        {
+          "file": "ea-frontend/src/pages/FixedAssets/FixedAssetLists.jsx",
+          "description": "Fixed asset register list."
+        },
+        {
+          "file": "ea-frontend/src/pages/FixedAssets/FixedAssetForm.jsx",
+          "description": "Add/edit fixed asset form."
+        },
+        {
+          "file": "ea-frontend/src/pages/FixedAssets/RunDepreciation.jsx",
+          "description": "Run depreciation batch page."
+        },
+        {
+          "file": "ea-frontend/src/components/DepreciationSchedule.jsx",
+          "description": "Depreciation schedule view component."
+        },
+        {
+          "file": "ea-frontend/src/services/fixedAssetsApi.js",
+          "description": "Fixed assets and depreciation RTK Query API."
+        },
+        {
+          "file": "ea-backend/controller/fixedAssestsController.js",
+          "description": "Fixed asset CRUD and disposal endpoints."
+        },
+        {
+          "file": "ea-backend/controller/depreciationJournalController.js",
+          "description": "Depreciation journal entry posting."
+        },
+        {
+          "file": "ea-backend/services/AutomatedDepreciationService.js",
+          "description": "Scheduled depreciation batch runs."
+        },
+        {
+          "file": "ea-backend/services/FixedAssetDisposalService.js",
+          "description": "Asset disposal accounting logic."
+        },
+        {
+          "file": "ea-backend/sequelize/FixedAssetsSchema.js",
+          "description": "Fixed asset Sequelize model."
+        }
+      ]
+    },
+    {
+      "module_name": "tax_1099",
+      "description": "1099 tax compliance: vendor payment snapshots, report preparation, PDF generation, filing, and year-end tax documents.",
+      "files": [
+        {
+          "file": "ea-frontend/src/pages/Reports/ExpensesAndVendors/Prepare1099Wizard.jsx",
+          "description": "1099 preparation wizard UI."
+        },
+        {
+          "file": "ea-frontend/src/pages/TaxCompliance/YearEndFilings.jsx",
+          "description": "Year-end tax filings management."
+        },
+        {
+          "file": "ea-frontend/src/pages/TaxCompliance/SalesTax.jsx",
+          "description": "Sales tax management page."
+        },
+        {
+          "file": "ea-frontend/src/services/taxComplianceApi.js",
+          "description": "Tax compliance RTK Query API."
+        },
+        {
+          "file": "ea-backend/controller/1099ReportController.js",
+          "description": "1099 report generation endpoints."
+        },
+        {
+          "file": "ea-backend/controller/1099FilingController.js",
+          "description": "1099 filing creation and download."
+        },
+        {
+          "file": "ea-backend/controller/taxComplianceController.js",
+          "description": "Tax compliance dashboard endpoints."
+        },
+        {
+          "file": "ea-backend/services/1099SnapshotService.js",
+          "description": "1099 payment snapshot creation logic."
+        },
+        {
+          "file": "ea-backend/services/1099FormPdfService.js",
+          "description": "1099 form PDF generation."
+        },
+        {
+          "file": "ea-backend/constants/1099Constants.js",
+          "description": "1099 form type and threshold constants."
+        }
+      ]
+    },
+    {
+      "module_name": "subscriptions_billing",
+      "description": "Stripe subscription billing, plan management, coupons, checkout, dunning, payouts, and org subscription enforcement.",
+      "files": [
+        {
+          "file": "ea-frontend/src/pages/BillingPage.jsx",
+          "description": "Billing and subscription management page."
+        },
+        {
+          "file": "ea-frontend/src/pages/Pricing/index.jsx",
+          "description": "Pricing plans display page."
+        },
+        {
+          "file": "ea-frontend/src/components/BillingManager.jsx",
+          "description": "Subscription billing UI component."
+        },
+        {
+          "file": "ea-frontend/src/components/PaymentGateway/CheckoutForm.jsx",
+          "description": "Stripe checkout form integration."
+        },
+        {
+          "file": "ea-frontend/src/services/billingApi.js",
+          "description": "Billing and subscription RTK Query API."
+        },
+        {
+          "file": "ea-frontend/src/services/planApi.js",
+          "description": "Pricing plans RTK Query API."
+        },
+        {
+          "file": "ea-backend/controller/stripeController.js",
+          "description": "Stripe webhooks, checkout, and Connect handlers."
+        },
+        {
+          "file": "ea-backend/controller/planController.js",
+          "description": "Subscription plan management."
+        },
+        {
+          "file": "ea-backend/services/CheckoutService.js",
+          "description": "Stripe checkout session creation."
+        },
+        {
+          "file": "ea-backend/services/SubscriptionService.js",
+          "description": "Plan and subscription business logic."
+        },
+        {
+          "file": "ea-backend/services/DunningManager.js",
+          "description": "Failed payment retry and dunning logic."
+        },
+        {
+          "file": "ea-backend/config/stripe.config.js",
+          "description": "Stripe SDK configuration."
+        },
+        {
+          "file": "ea-admin/src/pages/Plans/index.jsx",
+          "description": "Subscription plans list with CRUD navigation."
+        },
+        {
+          "file": "ea-admin/src/pages/Plans/PlanForm.jsx",
+          "description": "Create/edit plan with module permissions."
+        },
+        {
+          "file": "ea-admin/src/pages/Coupons/index.jsx",
+          "description": "Coupon list with Stripe product linking."
+        },
+        {
+          "file": "ea-admin/src/pages/Subscriptions/index.jsx",
+          "description": "Platform subscriptions list with cancel action."
+        },
+        {
+          "file": "ea-admin/src/services/plansApi.js",
+          "description": "Super admin plans CRUD API."
+        },
+        {
+          "file": "ea-admin/src/services/couponsApi.js",
+          "description": "Super admin coupons CRUD API."
+        },
+        {
+          "file": "ea-admin/src/services/subscriptionsApi.js",
+          "description": "Super admin subscriptions management API."
+        }
+      ]
+    },
+    {
+      "module_name": "notifications",
+      "description": "Multi-channel notifications (email, push, in-app), user preferences, templates, SQS delivery worker, and device tokens.",
+      "files": [
+        {
+          "file": "ea-frontend/src/pages/Notifications/index.jsx",
+          "description": "In-app notifications inbox page."
+        },
+        {
+          "file": "ea-frontend/src/pages/Settings/NotificationPreferences.jsx",
+          "description": "User notification preference settings."
+        },
+        {
+          "file": "ea-frontend/src/services/notificationApi.js",
+          "description": "Notifications RTK Query API."
+        },
+        {
+          "file": "ea-backend/controller/notificationController.js",
+          "description": "In-app notification endpoints."
+        },
+        {
+          "file": "ea-backend/controller/notificationPreferenceController.js",
+          "description": "User notification preference endpoints."
+        },
+        {
+          "file": "ea-backend/services/NotificationEventPublisher.js",
+          "description": "Event-to-notification dispatch orchestrator."
+        },
+        {
+          "file": "ea-backend/services/notifications/EmailChannelProvider.js",
+          "description": "Email notification channel provider."
+        },
+        {
+          "file": "ea-backend/services/notifications/PushChannelProvider.js",
+          "description": "Firebase push notification provider."
+        },
+        {
+          "file": "ea-backend/workers/NotificationWorker.js",
+          "description": "SQS async notification delivery worker."
+        },
+        {
+          "file": "ea-admin/src/pages/NotificationTemplates/index.jsx",
+          "description": "Notification template list with filters."
+        },
+        {
+          "file": "ea-admin/src/pages/NotificationTemplates/TemplateForm.jsx",
+          "description": "Create/edit template with live preview."
+        },
+        {
+          "file": "ea-admin/src/services/notificationTemplatesApi.js",
+          "description": "Notification templates CRUD API."
+        }
+      ]
+    },
+    {
+      "module_name": "eazeai",
+      "description": "AI assistant (EazeAI) with full-page chat, floating widget, intent routing, COA explanations, and financial data queries.",
+      "files": [
+        {
+          "file": "ea-frontend/src/pages/EazeAI/index.jsx",
+          "description": "Full-page EazeAI route wrapper."
+        },
+        {
+          "file": "ea-frontend/src/features/eazeai/EazeAIChat.jsx",
+          "description": "Main AI chat interface component."
+        },
+        {
+          "file": "ea-frontend/src/features/eazeai/chatApi.js",
+          "description": "EazeAI chat RTK Query endpoints."
+        },
+        {
+          "file": "ea-frontend/src/features/eazeai-widget/EazeAIWidget.jsx",
+          "description": "Floating AI widget FAB and panel."
+        },
+        {
+          "file": "ea-frontend/src/features/eazeai-widget/widgetApi.js",
+          "description": "Widget chat RTK Query endpoints."
+        },
+        {
+          "file": "ea-backend/controller/chatController.js",
+          "description": "Main AI chat endpoint (Ollama/OpenRouter)."
+        },
+        {
+          "file": "ea-backend/controller/widgetChatController.js",
+          "description": "Embedded widget chat endpoint."
+        },
+        {
+          "file": "ea-backend/services/eazeai/eazeAiIntentService.js",
+          "description": "AI intent classification and routing."
+        },
+        {
+          "file": "ea-backend/services/eazeai/eazeAiCoaExplainService.js",
+          "description": "AI chart of accounts explanations."
+        },
+        {
+          "file": "ea-backend/services/eazeai/eazeAiProfitLossReportService.js",
+          "description": "AI-powered P&L report queries."
+        },
+        {
+          "file": "ea-backend/Routes/chatRoutes.js",
+          "description": "EazeAI chat API routes."
+        }
+      ]
+    },
+    {
+      "module_name": "dashboard",
+      "description": "Financial dashboard with configurable widgets, KPIs, cash flow, P&L summaries, and business analytics.",
+      "files": [
+        {
+          "file": "ea-frontend/src/pages/Dashboard/index.jsx",
+          "description": "Financial dashboard with widget grid."
+        },
+        {
+          "file": "ea-frontend/src/pages/Dashboard/components/CashFlowWidget.jsx",
+          "description": "Cash flow chart widget."
+        },
+        {
+          "file": "ea-frontend/src/pages/Dashboard/components/ProfitLossWidget.jsx",
+          "description": "P&L summary widget."
+        },
+        {
+          "file": "ea-frontend/src/pages/Dashboard/components/BankAccountsWidget.jsx",
+          "description": "Connected bank accounts widget."
+        },
+        {
+          "file": "ea-frontend/src/services/dashboardApi.js",
+          "description": "Dashboard widget data RTK Query API."
+        },
+        {
+          "file": "ea-backend/controller/dashboardController.js",
+          "description": "Main dashboard KPI endpoints."
+        },
+        {
+          "file": "ea-backend/controller/businessAnalyticsController.js",
+          "description": "Business analytics endpoints."
+        },
+        {
+          "file": "ea-admin/src/pages/Dashboard/index.jsx",
+          "description": "Super admin platform stats dashboard."
+        },
+        {
+          "file": "ea-admin/src/services/dashboardApi.js",
+          "description": "Super admin dashboard stats API."
+        }
+      ]
+    },
+    {
+      "module_name": "home",
+      "description": "Customizable home hub with drag-and-drop widgets, get-started cards, recent activity feed, and targeted home updates.",
+      "files": [
+        {
+          "file": "ea-frontend/src/pages/home/HomePage.jsx",
+          "description": "Customizable home dashboard grid."
+        },
+        {
+          "file": "ea-frontend/src/pages/home/components/HomeGrid.jsx",
+          "description": "Drag-and-drop widget grid layout."
+        },
+        {
+          "file": "ea-frontend/src/pages/home/components/RecentWorkFeed.jsx",
+          "description": "Recent activity feed widget."
+        },
+        {
+          "file": "ea-frontend/src/pages/home/widgets/homeWidgetRegistry.js",
+          "description": "Home widget type registry."
+        },
+        {
+          "file": "ea-frontend/src/services/homeConfigApi.js",
+          "description": "Home layout persistence API."
+        },
+        {
+          "file": "ea-frontend/src/services/recentWorksApi.js",
+          "description": "Recent works feed API."
+        },
+        {
+          "file": "ea-backend/controller/homeConfigController.js",
+          "description": "In-app home banners and updates config."
+        },
+        {
+          "file": "ea-admin/src/pages/HomeUpdates/index.jsx",
+          "description": "Manage targeted home update cards and banners."
+        },
+        {
+          "file": "ea-admin/src/pages/HomeUpdates/HomeUpdateForm.jsx",
+          "description": "Create/edit home content with scheduling and targeting."
+        },
+        {
+          "file": "ea-admin/src/services/homeUpdatesApi.js",
+          "description": "Home updates CRUD API."
+        }
+      ]
+    },
+    {
+      "module_name": "partner_cpa",
+      "description": "CPA/partner firm portal, client org creation, access requests, firm registration, and platform CPA configuration.",
+      "files": [
+        {
+          "file": "ea-frontend/src/pages/Partner/Dashboard/CPADashboard.jsx",
+          "description": "CPA firm dashboard and client list."
+        },
+        {
+          "file": "ea-frontend/src/pages/Partner/CreateClientOrganization/CreateClientOrgWizard.jsx",
+          "description": "Create client organization wizard."
+        },
+        {
+          "file": "ea-frontend/src/pages/Partner/AccessRequests/AccessRequestsList.jsx",
+          "description": "CPA access requests hub."
+        },
+        {
+          "file": "ea-frontend/src/pages/Partner/Register/PartnerRegistrationWizard.jsx",
+          "description": "Partner firm registration wizard."
+        },
+        {
+          "file": "ea-frontend/src/pages/CPAServices/SearchCPAs.jsx",
+          "description": "Search CPAs for org admin."
+        },
+        {
+          "file": "ea-frontend/src/services/partnerApi.js",
+          "description": "Partner firm RTK Query API."
+        },
+        {
+          "file": "ea-frontend/src/services/cpaApi.js",
+          "description": "CPA services RTK Query API."
+        },
+        {
+          "file": "ea-backend/controller/cpaController.js",
+          "description": "CPA firm dashboard and client org endpoints."
+        },
+        {
+          "file": "ea-backend/controller/partnerController.js",
+          "description": "Partner firm registration and management."
+        },
+        {
+          "file": "ea-backend/services/CPAService.js",
+          "description": "CPA access and org creation logic."
+        },
+        {
+          "file": "ea-backend/services/PartnerService.js",
+          "description": "Partner onboarding business logic."
+        },
+        {
+          "file": "ea-backend/sequelize/partner/index.js",
+          "description": "Partner model associations bootstrap."
+        },
+        {
+          "file": "ea-admin/src/pages/CPA/index.jsx",
+          "description": "CPA/partner list with approve/reject actions."
+        },
+        {
+          "file": "ea-admin/src/pages/CPA/CPADetail.jsx",
+          "description": "CPA firm detail with clients and change requests."
+        },
+        {
+          "file": "ea-admin/src/pages/PlatformCPAConfig/index.jsx",
+          "description": "Platform CPA minimum plan config page."
+        },
+        {
+          "file": "ea-admin/src/services/cpaApi.js",
+          "description": "Super admin CPA management API."
+        },
+        {
+          "file": "ea-admin/src/services/platformCpaConfigApi.js",
+          "description": "Platform CPA config API."
+        }
+      ]
+    },
+    {
+      "module_name": "customer_vendor_portals",
+      "description": "Self-service customer and vendor portals for invoices, bills, payments, statements, and payout setup.",
+      "files": [
+        {
+          "file": "ea-frontend/src/portal/customer/CustomerPortalApp.jsx",
+          "description": "Customer portal router and layout."
+        },
+        {
+          "file": "ea-frontend/src/portal/customer/pages/Invoices.jsx",
+          "description": "Customer portal invoice list."
+        },
+        {
+          "file": "ea-frontend/src/portal/vendor/VendorPortalApp.jsx",
+          "description": "Vendor portal router and layout."
+        },
+        {
+          "file": "ea-frontend/src/portal/vendor/pages/Bills.jsx",
+          "description": "Vendor portal bills list."
+        },
+        {
+          "file": "ea-frontend/src/portal/shared/portalApiBase.js",
+          "description": "Portal-specific API client base."
+        },
+        {
+          "file": "ea-backend/controller/portal/customerPortalController.js",
+          "description": "Customer self-service portal endpoints."
+        },
+        {
+          "file": "ea-backend/controller/portal/vendorPortalController.js",
+          "description": "Vendor self-service portal endpoints."
+        },
+        {
+          "file": "ea-backend/services/portal/PortalAuthService.js",
+          "description": "Portal JWT authentication service."
+        },
+        {
+          "file": "ea-backend/middleware/portalAuthMiddleware.js",
+          "description": "Portal auth middleware for customer/vendor routes."
+        },
+        {
+          "file": "ea-backend/Routes/portalRoutes.js",
+          "description": "Portal route aggregator."
+        }
+      ]
+    },
+    {
+      "module_name": "payees_counterparties",
+      "description": "Customer/vendor payee management, cross-organization counterparty connections, and payee statements.",
+      "files": [
+        {
+          "file": "ea-frontend/src/components/Counterparty/OrganizationDirectoryAutocomplete.jsx",
+          "description": "Cross-org counterparty search autocomplete."
+        },
+        {
+          "file": "ea-frontend/src/pages/Settings/CounterpartyCollaborationSettings.jsx",
+          "description": "Counterparty sync default settings."
+        },
+        {
+          "file": "ea-frontend/src/services/counterpartyApi.js",
+          "description": "Counterparty collaboration RTK Query API."
+        },
+        {
+          "file": "ea-backend/controller/payeeController.js",
+          "description": "Customer/vendor payee CRUD endpoints."
+        },
+        {
+          "file": "ea-backend/controller/counterpartyController.js",
+          "description": "Cross-org payee connection endpoints."
+        },
+        {
+          "file": "ea-backend/services/payeeServices.js",
+          "description": "Payee business logic."
+        },
+        {
+          "file": "ea-backend/services/CounterpartyService.js",
+          "description": "Counterparty linking logic."
+        },
+        {
+          "file": "ea-backend/sequelize/PayeeSchema.js",
+          "description": "Payee Sequelize model."
+        }
+      ]
+    },
+    {
+      "module_name": "settings",
+      "description": "Organization and user settings: invoice customization, 2FA, data import, feature flags, and org profile.",
+      "files": [
+        {
+          "file": "ea-frontend/src/pages/Settings/AllSettings.jsx",
+          "description": "Settings hub card grid."
+        },
+        {
+          "file": "ea-frontend/src/pages/Settings/InvoiceCustomization.jsx",
+          "description": "Invoice branding and template customization."
+        },
+        {
+          "file": "ea-frontend/src/pages/Settings/TwoFactorAuth.jsx",
+          "description": "2FA setup settings page."
+        },
+        {
+          "file": "ea-frontend/src/pages/Settings/DataImport/index.jsx",
+          "description": "Data import hub for CSV/Excel uploads."
+        },
+        {
+          "file": "ea-frontend/src/pages/UserProfile.jsx",
+          "description": "Current user profile settings."
+        },
+        {
+          "file": "ea-frontend/src/pages/Profile.jsx",
+          "description": "Organization profile edit page."
+        },
+        {
+          "file": "ea-frontend/src/services/dataImportApi.js",
+          "description": "Data import RTK Query API."
+        },
+        {
+          "file": "ea-frontend/src/services/featureFlagsApi.js",
+          "description": "Feature flags RTK Query API."
+        },
+        {
+          "file": "ea-backend/controller/organizationSettingsController.js",
+          "description": "Org-level configuration endpoints."
+        },
+        {
+          "file": "ea-backend/controller/dataImportController.js",
+          "description": "CSV/Excel data import endpoints."
+        },
+        {
+          "file": "ea-backend/controller/featureFlagsController.js",
+          "description": "Feature flag management endpoints."
+        },
+        {
+          "file": "ea-backend/services/dataImportService.js",
+          "description": "Import parsing and validation logic."
+        }
+      ]
+    },
+    {
+      "module_name": "data_import_migration",
+      "description": "Legacy data migration prompts, CSV/Excel imports, and QuickBooks/other system migration flows.",
+      "files": [
+        {
+          "file": "ea-frontend/src/pages/auth/DataMigrationPrompt/index.jsx",
+          "description": "Prompt to migrate from another accounting system."
+        },
+        {
+          "file": "ea-frontend/src/services/migrationApi.js",
+          "description": "Data migration RTK Query API."
+        },
+        {
+          "file": "ea-backend/controller/migrationController.js",
+          "description": "Legacy data migration endpoints."
+        },
+        {
+          "file": "ea-backend/controller/dataImportController.js",
+          "description": "Structured data import endpoints."
+        },
+        {
+          "file": "ea-backend/Routes/migrationRoutes.js",
+          "description": "Migration API routes."
+        }
+      ]
+    },
+    {
+      "module_name": "super_admin",
+      "description": "Platform super admin panel for user management, org monitoring, data integrity fixes, logging, and app version control.",
+      "files": [
+        {
+          "file": "ea-admin/src/App.jsx",
+          "description": "Super admin root route tree."
+        },
+        {
+          "file": "ea-admin/src/navigation/RequireAuth.jsx",
+          "description": "Route guard redirecting unauthenticated users to login."
+        },
+        {
+          "file": "ea-admin/src/components/layout/Layout.jsx",
+          "description": "Admin app shell with sidebar and header."
+        },
+        {
+          "file": "ea-admin/src/pages/AdminUsers/index.jsx",
+          "description": "Super admin and application admin user list."
+        },
+        {
+          "file": "ea-admin/src/pages/Users/index.jsx",
+          "description": "Platform users list with search."
+        },
+        {
+          "file": "ea-admin/src/pages/Users/UserDetail.jsx",
+          "description": "User profile, org memberships, subscription info."
+        },
+        {
+          "file": "ea-admin/src/pages/Organizations/index.jsx",
+          "description": "Orgs with transaction discrepancies (Transaction Issues)."
+        },
+        {
+          "file": "ea-admin/src/pages/Organizations/OrganizationDetail.jsx",
+          "description": "Per-org discrepancy fix and bill payment override."
+        },
+        {
+          "file": "ea-admin/src/pages/ApiMonitor/index.jsx",
+          "description": "API request log monitor with timeline and errors."
+        },
+        {
+          "file": "ea-admin/src/pages/DbAuditLog/index.jsx",
+          "description": "DB audit log dashboard with record drilldown."
+        },
+        {
+          "file": "ea-admin/src/pages/AppVersions/index.jsx",
+          "description": "Mobile app version CRUD and force-update flags."
+        },
+        {
+          "file": "ea-admin/src/pages/PayrollLeads/index.jsx",
+          "description": "Payroll setup interest leads from onboarding."
+        },
+        {
+          "file": "ea-admin/src/services/transactionDiscrepancyApi.js",
+          "description": "Transaction discrepancy stats and fix API."
+        },
+        {
+          "file": "ea-admin/src/services/logMonitorApi.js",
+          "description": "API and DB log monitor endpoints."
+        },
+        {
+          "file": "ea-backend/controller/superAdminAuthController.js",
+          "description": "Super admin login for panel V2."
+        },
+        {
+          "file": "ea-backend/controller/superAdminManagementController.js",
+          "description": "Platform management operations."
+        },
+        {
+          "file": "ea-backend/middleware/superAdminAuth.js",
+          "description": "Super admin JWT auth middleware."
+        },
+        {
+          "file": "ea-backend/Routes/superAdminRoutes.js",
+          "description": "Super admin route aggregator."
+        }
+      ]
+    },
+    {
+      "module_name": "security_encryption",
+      "description": "End-to-end payload encryption, password health policies, audit logging, and security middleware stack.",
+      "files": [
+        {
+          "file": "ea-frontend/src/utils/encryptedApiClient.js",
+          "description": "Encrypted API client for E2E payload encryption."
+        },
+        {
+          "file": "ea-backend/controller/encryptionController.js",
+          "description": "Encryption key exchange endpoints."
+        },
+        {
+          "file": "ea-backend/middleware/globalEncryptionMiddleware.js",
+          "description": "Global request/response encryption middleware."
+        },
+        {
+          "file": "ea-backend/middleware/passwordHealthMiddleware.js",
+          "description": "Enforces password health policies on login."
+        },
+        {
+          "file": "ea-backend/services/PasswordHealthService.js",
+          "description": "Password reuse and strength policy logic."
+        },
+        {
+          "file": "ea-backend/util/e2eEncryption.js",
+          "description": "E2E encryption utility functions."
+        },
+        {
+          "file": "ea-backend/util/sequelizeAuditHooks.js",
+          "description": "Global Sequelize audit hooks for DB changes."
+        },
+        {
+          "file": "ea-backend/middleware/rateLimiter.js",
+          "description": "Rate limiting configs for auth and sensitive routes."
+        }
+      ]
+    },
+    {
+      "module_name": "infrastructure",
+      "description": "App bootstrap, workers, cron jobs, logging, monitoring, health checks, and shared UI components.",
+      "files": [
+        {
+          "file": "ea-backend/bootstrap.js",
+          "description": "Backend boot: dotenv, AWS Secrets, Sentry, index import."
+        },
+        {
+          "file": "ea-backend/index.js",
+          "description": "Express app setup, middleware chain, route mounting, cron init."
+        },
+        {
+          "file": "ea-backend/workers/startWorker.js",
+          "description": "Starts Plaid SQS sync worker process."
+        },
+        {
+          "file": "ea-backend/helper/cron.js",
+          "description": "Master cron: Plaid sync, invoices, recurring bills, OFAC."
+        },
+        {
+          "file": "ea-backend/util/logger.js",
+          "description": "Winston logger with daily rotate file."
+        },
+        {
+          "file": "ea-backend/config/monitoring.js",
+          "description": "Sentry/GlitchTip initialization."
+        },
+        {
+          "file": "ea-backend/controller/healthCheckController.js",
+          "description": "App and DB health check endpoints."
+        },
+        {
+          "file": "ea-frontend/src/App.jsx",
+          "description": "Frontend root: Redux Provider, Theme, BrowserRouter."
+        },
+        {
+          "file": "ea-frontend/src/navigation/AppRouter.jsx",
+          "description": "Frontend route tree with auth guards."
+        },
+        {
+          "file": "ea-frontend/src/features/store.jsx",
+          "description": "Redux store with persist config and RTK Query middleware."
+        },
+        {
+          "file": "ea-frontend/src/components/Layout/index.jsx",
+          "description": "Main app layout shell with sidebar and header."
+        },
+        {
+          "file": "ea-frontend/src/components/DataTable2/index.jsx",
+          "description": "Newer reusable data table component."
+        },
+        {
+          "file": "ea-frontend/src/monitoring/sentry.js",
+          "description": "Frontend Sentry/GlitchTip initialization."
+        },
+        {
+          "file": "ea-admin/src/main.jsx",
+          "description": "Admin app bootstrap with Redux and Sentry."
+        },
+        {
+          "file": "ea-admin/src/features/store.js",
+          "description": "Admin Redux store and RTK Query setup."
+        },
+        {
+          "file": "ea-admin/src/services/baseQuery.js",
+          "description": "Admin RTK Query base with CSRF and token refresh."
+        }
+      ]
+    }
+  ]
+}
