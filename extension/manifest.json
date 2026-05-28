@@ -1,0 +1,26 @@
+{
+  "manifest_version": 3,
+  "name": "AI Work Item Creator",
+  "version": "1.0.0",
+  "description": "Create Azure DevOps work items from screenshots using AI",
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    },
+    "default_title": "Create Work Item"
+  },
+  "permissions": ["activeTab", "scripting", "clipboardRead"],
+  "host_permissions": ["http://localhost:8000/*"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"]
+    }
+  ]
+}

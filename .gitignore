@@ -5,7 +5,6 @@ __pycache__/
 
 # C extensions
 *.so
-*.json
 
 # Distribution / packaging
 .Python
@@ -46,10 +45,12 @@ coverage.xml
 .hypothesis/
 .pytest_cache/
 
+# Extension
+extension/node_modules/
+extension/dist/
+
 # IDEs/Editors
 .vscode/
 .idea/
 *.swp
 *.swo
-
-context_tree.json

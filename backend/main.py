@@ -16,6 +16,7 @@ app.add_middleware(CORSMiddleware, allow_origins=["*"],
 async def analyze(
     description:    str                        = Form(...),
     work_item_type: str                        = Form(...),
+    auto_assign:    bool                       = Form(default=True),
     screenshots:    Optional[List[UploadFile]] = File(default=None)
 ):
     image_bytes_list = []
@@ -38,16 +39,19 @@ async def analyze(
     prompt    = build_prompt(work_item_type, description, rag_context, has_images, image_count)
     ai_output = full_analysis(image_bytes_list or None, prompt)
 
-    # Workload-based auto assign — no module logic, just least loaded
-    team     = CONTEXT_TREE["team"]
-    workload = get_team_workload(team)
-    assignee = get_least_loaded_assignee(workload, team)
-
-    # Override LLM assignee with workload-based one
-    ai_output["assignee_email"]      = assignee["email"]
-    ai_output["assignee_name"]       = assignee["name"]
-    ai_output["assignee_reason"]     = assignee["reason"]
-    ai_output["workload_snapshot"]   = assignee["workload_snapshot"]
+    if auto_assign:
+        team     = CONTEXT_TREE["team"]
+        workload = get_team_workload(team)
+        assignee = get_least_loaded_assignee(workload, team)
+        ai_output["assignee_email"]    = assignee["email"]
+        ai_output["assignee_name"]     = assignee["name"]
+        ai_output["assignee_reason"]   = assignee["reason"]
+        ai_output["workload_snapshot"] = assignee["workload_snapshot"]
+    else:
+        ai_output["assignee_email"]    = ""
+        ai_output["assignee_name"]     = ""
+        ai_output["assignee_reason"]   = "Auto-assign disabled. Please select manually."
+        ai_output["workload_snapshot"] = {}
 
     duplicates = find_duplicates(ai_output["title"])
 
@@ -56,7 +60,8 @@ async def analyze(
         "duplicates":     duplicates,
         "has_images":     has_images,
         "image_count":    image_count,
-        "work_item_type": work_item_type
+        "work_item_type": work_item_type,
+        "auto_assign":    auto_assign,
     }
 
 @app.post("/create")
