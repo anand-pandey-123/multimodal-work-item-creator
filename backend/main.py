@@ -1,11 +1,11 @@
 from fastapi import FastAPI, UploadFile, Form, File
 from fastapi.middleware.cors import CORSMiddleware
-from backend.llm_handler import quick_analysis, full_analysis
-from backend.prompt_builder import build_prompt
+from llm_handler import quick_analysis, full_analysis
+from prompt_builder import build_prompt
 from typing import Optional, List
-from backend.vector_store import query_context, format_context_for_prompt
-from backend.azure_devops import find_duplicates, create_work_item, attach_screenshot, get_team_workload, get_least_loaded_assignee
-from scripts.embed_context_tree import CONTEXT_TREE
+from vector_store import query_context, format_context_for_prompt
+from azure_devops import find_duplicates, create_work_item, attach_screenshot, get_team_workload, get_least_loaded_assignee
+from vector_store import CONTEXT_TREE
 import json
 
 app = FastAPI()

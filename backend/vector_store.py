@@ -2,6 +2,21 @@ import chromadb
 from sentence_transformers import SentenceTransformer
 import os
 
+CONTEXT_TREE = {
+    "team": [
+    { "name": "Anand Pandey", "email": "anand.pandey@eazeaccounts.com" },
+    { "name": "Abhishek Patel", "email": "abhishek.patel@eazeaccounts.com" },
+    { "name": "Saswat Singh", "email": "saswat.singh@eazeaccounts.com" },
+    {
+      "name": "Maheshwar Muthukumar",
+      "email": "maheshwar.muthukumar@eazeaccounts.com"
+    },
+    { "name": "Harsh Garg", "email": "harsh.garg@eazeaccounts.com" },
+    { "name": "Adarsh Patel", "email": "adarsh.patel@eazeaccounts.com" },
+    { "name": "Adarsh Patel", "email": "adarsh.patel@eazeaccounts.com" }
+  ]
+}
+
 model = SentenceTransformer("all-MiniLM-L6-v2")
 client = chromadb.PersistentClient(path=os.getenv("CHROMA_PATH", "./chroma_db"))
 collection = client.get_or_create_collection("codebase_context")

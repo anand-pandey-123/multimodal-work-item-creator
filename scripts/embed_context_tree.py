@@ -6,20 +6,6 @@ model      = SentenceTransformer("all-MiniLM-L6-v2")
 client     = chromadb.PersistentClient(path="./chroma_db")
 collection = client.get_or_create_collection("codebase_context")
 
-CONTEXT_TREE = {
-    "team": [
-    { "name": "Anand Pandey", "email": "anand.pandey@eazeaccounts.com" },
-    { "name": "Abhishek Patel", "email": "abhishek.patel@eazeaccounts.com" },
-    { "name": "Saswat Singh", "email": "saswat.singh@eazeaccounts.com" },
-    {
-      "name": "Maheshwar Muthukumar",
-      "email": "maheshwar.muthukumar@eazeaccounts.com"
-    },
-    { "name": "Harsh Garg", "email": "harsh.garg@eazeaccounts.com" },
-    { "name": "Adarsh Patel", "email": "adarsh.patel@eazeaccounts.com" },
-    { "name": "Adarsh Patel", "email": "adarsh.patel@eazeaccounts.com" }
-  ]
-}
 
 
 def load_and_embed(tree_path="context_tree.json"):
